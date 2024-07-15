@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Scroll Background Change</title>
+    <style>
+        .menu-container {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px 0;
+            min-height: 70px;
+            width: 100vw;
+            transition: background-color 0.3s ease; /* Transição suave */
+        }
+        .menu {
+            position: relative;
+        }
+        .menu-toggle, .close-menu {
+            font-family: unbounded;
+            font-weight: 700;
+            font-style: normal;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 35px;
+            color: #1b1c1e;
+            border: none;
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 27px;
+            background-color: transparent;
+        }
+        .close-menu {
+            display: none;
+        }
+        .menu-items {
+            display: flex;
+            flex-direction: row;
+            align-items: left;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            display: none;
+            background-color: #FCF8E8;
+            font-family: unbounded;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .menu-items.active {
+            display: flex;
+        }
+        .menu-items li {
+            list-style-type: none;
+        }
+        .menu-items li a {
+            display: block;
+            text-decoration: none;
+            color: #1b1c1e;
+            text-align: center;
+            padding: 30px;
+        }
+        .menu-items li a:hover {
+            font-family: IM Fell English;
+            text-transform: capitalize;
+            text-decoration: underline;
+            font-size: 23px;
+        }
+        @media (max-width: 768px) {
+            .menu-items {
+                flex-direction: column;
+                width: 100%;
+            }
+            .menu-items li a {
+                padding: 10px 20px;
+                width: 100vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container" id="menuContainer">
+        <div class="menu">
+            <button class="menu-toggle">Menu</button>
+            <button class="close-menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            <ul class="menu-items">
+                <li class="child bounce"><a href="">Home</a></li>
+                <li class="child bounce"><a href="#">Serviços</a></li>
+                <li class="child bounce"><a href="#">Projetos especiais</a></li>
+                <li class="child bounce"><a href="#">Lab</a></li>
+                <li class="child bounce"><a href="#">Galeria</a></li>
+                <li class="child bounce"><a href="#">Blog</a></li>
+                <li class="child bounce"><a href="#">Contato</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var menu = document.querySelector('.menu');
+            var menuToggle = document.querySelector('.menu-toggle');
+            var closeMenuButton = document.querySelector('.close-menu');
+            var menuItems = document.querySelector('.menu-items');
+            var menuContainer = document.getElementById('menuContainer');
+
+            // Função para verificar se é desktop
+            function isDesktop() {
+                return window.innerWidth > 768;
+            }
+
+            // Mostrar menu ao clicar no toggle no mobile
+            menuToggle.addEventListener('click', function(event) {
+                if (!isDesktop()) {
+                    event.stopPropagation();
+                    menuItems.classList.toggle('active');
+                    menuToggle.style.display = menuItems.classList.contains('active') ? 'none' : 'block';
+                    closeMenuButton.style.display = menuItems.classList.contains('active') ? 'block' : 'none';
+                }
+            });
+
+            // Fechar menu ao clicar no botão Fechar no mobile
+            closeMenuButton.addEventListener('click', function() {
+                if (!isDesktop()) {
+                    menuItems.classList.remove('active');
+                    menuToggle.style.display = 'block';
+                    closeMenuButton.style.display = 'none';
+                }
+            });
+
+            // Expandir menu ao passar o mouse no desktop
+            menu.addEventListener('mouseover', function() {
+                if (isDesktop()) {
+                    menuItems.classList.add('active');
+                    menuToggle.style.display = 'none';
+                    closeMenuButton.style.display = 'block';
+                }
+            });
+
+            // Fechar menu ao sair do menu com o mouse no desktop
+            menu.addEventListener('mouseout', function() {
+                if (isDesktop()) {
+                    menuItems.classList.remove('active');
+                    menuToggle.style.display = 'block';
+                    closeMenuButton.style.display = 'none';
+                }
+            });
+
+            // Fechar menu se clicar fora dele
+            document.addEventListener('click', function(event) {
+                var targetElement = event.target;
+                if (!menu.contains(targetElement) && !targetElement.classList.contains('menu-toggle')) {
+                    menuItems.classList.remove('active');
+                    menuToggle.style.display = 'block';
+                    closeMenuButton.style.display = 'none';
+                }
+            });
+
+            // Fechar menu ao clicar em um link do menu
+            menuItems.addEventListener('click', function(event) {
+                if (event.target.tagName === 'A') {
+                    menuItems.classList.remove('active');
+                    menuToggle.style.display = 'block';
+                    closeMenuButton.style.display = 'none';
+                }
+            });
+
+            // Mudar cor de fundo do menu ao rolar a página
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    menuContainer.style.backgroundColor = '#f0f0f0'; // Cor quando rolar a página
+                } else {
+                    menuContainer.style.backgroundColor = 'transparent'; // Cor original
+                }
+            });
+
+            // Reaplicar a lógica de mostrar/esconder botões ao redimensionar a janela
+            window.addEventListener('resize', function() {
+                if (!isDesktop()) {
+                    menuItems.classList.remove('active');
+                    menuToggle.style.display = 'block';
+                    closeMenuButton.style.display = 'none';
+                } else {
+                    menuToggle.style.display = 'none';
+                    closeMenuButton.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
